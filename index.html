@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RGSalesSyncServer API | RGSoft</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="mobile-menu" id="mobileMenu" aria-label="Abrir menu">☰</button>
+  <a class="brand" href="#inicio">
+    <span class="brand-name">RGSoft</span>
+    <span class="brand-divider"></span>
+    <span class="brand-product">API Documentation</span>
+  </a>
+  <div class="top-actions">
+    <span class="version">v1.01</span>
+    <a href="https://www.rgsoft.com.br/" target="_blank" rel="noopener">rgsoft.com.br</a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="search">
+      <span>⌕</span>
+      <input id="search" type="search" placeholder="Pesquisar..." autocomplete="off">
+      <kbd>⌘ K</kbd>
+    </div>
+
+    <div class="nav-label">GUIA</div>
+    <a class="nav-link" href="#inicio" data-section="inicio">Introdução</a>
+    <a class="nav-link" href="#autenticacao" data-section="autenticacao">Autenticação</a>
+
+    <div class="nav-label">CLIENTES</div>
+    <a class="nav-link" href="#getcustomers" data-section="getcustomers">
+      <span class="verb post">POST</span> GetCustomers
+    </a>
+    <a class="nav-link" href="#registercustomer" data-section="registercustomer">
+      <span class="verb post">POST</span> RegisterCustomer
+    </a>
+
+    <div class="nav-label">PEDIDOS</div>
+    <a class="nav-link" href="#registerorder" data-section="registerorder">
+      <span class="verb post">POST</span> RegisterOrder
+    </a>
+    <a class="nav-link" href="#getorderstatus" data-section="getorderstatus">
+      <span class="verb post">POST</span> GetOrderStatus
+    </a>
+
+    <div class="nav-label">REFERÊNCIA</div>
+    <a class="nav-link" href="#status" data-section="status">HTTP Status</a>
+
+    <div class="sidebar-footer">© RGSoft Informática Ltda.</div>
+  </aside>
+
+  <main class="main">
+    <section id="inicio" class="hero page-section">
+      <div class="eyebrow">API</div>
+      <h1>RGSalesSyncServer</h1>
+      <p>Documentação para integração de sistemas externos com o Fênix ERP.</p>
+      <div class="hero-chips"><span>REST</span><span>JSON</span><span>HTTP</span><span>v1.01</span></div>
+    </section>
+
+    <section id="autenticacao" class="doc-section page-section">
+      <h2>Autenticação</h2>
+      <p>As APIs utilizam autenticação Basic com o token fornecido pela RGSoft.</p>
+      <div class="codebox">
+        <div class="codebar"><span>Header</span><button data-copy="auth-code">Copiar</button></div>
+        <pre id="auth-code">Content-Type: application/json
+Authorization: Basic {token}</pre>
+      </div>
+    </section>
+
+    <!-- CLIENTES / GETCUSTOMERS -->
+    <section id="getcustomers" class="endpoint-section page-section">
+      <div class="endpoint-main">
+        <div class="endpoint-title"><span class="verb post big">POST</span><h2>GetCustomers</h2></div>
+        <p class="lead">Pesquisa o cadastro de clientes no Fênix ERP.</p>
+        <div class="url-line"><code>http://{host}/rgfenix/clientes/getcustomers</code><button data-copy-text="http://{host}/rgfenix/clientes/getcustomers">Copiar</button></div>
+
+        <div class="tabs" data-tabs="getcustomers">
+          <button class="tab active" data-tab="params">Parâmetros</button>
+          <button class="tab" data-tab="examples">Exemplos</button>
+          <button class="tab" data-tab="response">Resposta</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="params">
+          <h3>Body <span class="json-pill">JSON</span></h3>
+          <div class="param-table">
+            <div class="param-head"><span>Campo</span><span>Tipo</span><span>Obrigatório</span><span>Descrição</span></div>
+            <div class="param-row"><code>search_mode</code><span>String(15)</span><b>required</b><span><strong>single</strong> para consulta individual ou <strong>list</strong> para listagem.</span></div>
+            <div class="param-row"><code>empresa</code><span>Integer</span><b>required</b><span>Código da empresa no Fênix ERP.</span></div>
+            <div class="param-row"><code>tipo_pessoa</code><span>String(1)</span><em>conditional</em><span>J — Jurídica | F — Física. Usado em <code>single</code>.</span></div>
+            <div class="param-row"><code>cnpj_cpf</code><span>String(25)</span><em>conditional</em><span>CNPJ ou CPF sem máscara. Usado em <code>single</code>.</span></div>
+            <div class="param-row"><code>uf</code><span>String(2)</span><em>conditional</em><span>Estado do cliente. Usado em <code>list</code>.</span></div>
+            <div class="param-row"><code>cod_vend</code><span>Integer</span><em>conditional</em><span>Código do vendedor. Zero ou omitido para todos.</span></div>
+            <div class="param-row"><code>sit_cadastro</code><span>String(1)</span><em>conditional</em><span>A — Ativos | I — Inativos.</span></div>
+            <div class="param-row"><code>dt_cad_ini</code><span>Date</span><em>conditional</em><span>Data inicial, formato yyyy-mm-dd.</span></div>
+            <div class="param-row"><code>dt_cad_fin</code><span>Date</span><em>conditional</em><span>Data final, formato yyyy-mm-dd.</span></div>
+            <div class="param-row"><code>page</code><span>Integer</span><em>conditional</em><span>Página. Obrigatório em <code>list</code>.</span></div>
+            <div class="param-row"><code>page_size</code><span>Integer</span><em>conditional</em><span>Registros por página, de 1 a 2000.</span></div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="examples">
+          <h3>Busca individual</h3>
+          <div class="codebox"><div class="codebar"><span>JSON</span><button data-copy="get-single">Copiar</button></div><pre id="get-single">{
+  "search_mode": "single",
+  "empresa": 1,
+  "tipo_pessoa": "J",
+  "cnpj_cpf": "02103ABC000189"
+}</pre></div>
+          <h3>Listagem</h3>
+          <div class="codebox"><div class="codebar"><span>JSON</span><button data-copy="get-list">Copiar</button></div><pre id="get-list">{
+  "search_mode": "list",
+  "empresa": 1,
+  "uf": "RS",
+  "dt_cad_ini": "2026-09-01",
+  "page": 1,
+  "page_size": 500
+}</pre></div>
+        </div>
+        <div class="tab-panel" data-panel="response">
+          <div class="response-head"><span class="status ok">200 OK</span><span>application/json</span></div>
+          <div class="codebox"><div class="codebar"><span>Response</span><button data-copy="get-response-code">Copiar</button></div><pre id="get-response-code">{
+  "request_id": "MOCK-7C4F2D91",
+  "res_code": 200,
+  "res_message": "Consulta executada com sucesso",
+  "data": {
+    "total": 500,
+    "count": 2,
+    "page": 1,
+    "page_size": 500,
+    "customers": [
+      {
+        "cod_cliente": 1,
+        "nome": "Empresa XYZ Ltda",
+        "tipo_pessoa": "J",
+        "cidade": "Caxias do Sul",
+        "uf": "RS",
+        "cnpj_cpf": "05104409000234"
+      }
+    ]
+  }
+}</pre></div>
+        </div>
+      </div>
+
+      <aside class="try-panel" data-mock="getcustomers">
+        <div class="try-header"><span>Try it</span><span class="mock">MOCK</span></div>
+        <p>Teste a interface sem enviar nenhuma requisição para um servidor.</p>
+        <div class="mock-scenario">
+          <label>Resposta simulada</label>
+          <select id="gc-scenario">
+            <option value="200">200 OK — sucesso</option>
+            <option value="400">400 Bad Request — parâmetros inválidos</option>
+            <option value="401">401 Unauthorized — autenticação</option>
+            <option value="500">500 Internal Server Error — erro interno</option>
+          </select>
+        </div>
+        <label>search_mode</label><select id="gc-mode"><option>list</option><option>single</option></select>
+        <label>empresa</label><input id="gc-empresa" value="1">
+        <label>uf</label><input id="gc-uf" value="RS">
+        <label>page_size</label><input id="gc-page" value="10">
+        <button class="run" id="gc-run">Executar requisição</button>
+        <div class="mock-result"><div class="result-title"><span class="status ok">200 OK</span><span>Mock response</span></div><pre id="gc-result"></pre></div>
+      </aside>
+    </section>
+
+    <!-- CLIENTES / REGISTERCUSTOMER -->
+    <section id="registercustomer" class="endpoint-section page-section">
+      <div class="endpoint-main">
+        <div class="endpoint-title"><span class="verb post big">POST</span><h2>RegisterCustomer</h2></div>
+        <p class="lead">Registra novos clientes no Fênix ERP. Não atualiza cadastros existentes.</p>
+        <div class="url-line"><code>http://{host}/rgfenix/clientes/registercustomer</code><button data-copy-text="http://{host}/rgfenix/clientes/registercustomer">Copiar</button></div>
+
+        <div class="tabs" data-tabs="registercustomer">
+          <button class="tab active" data-tab="params">Parâmetros</button>
+          <button class="tab" data-tab="example">Exemplo</button>
+          <button class="tab" data-tab="response">Resposta</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="params">
+          <h3>Body <span class="json-pill">JSON</span></h3>
+          <div class="param-table">
+            <div class="param-head"><span>Campo</span><span>Tipo</span><span>Obrigatório</span><span>Descrição</span></div>
+            <div class="param-row"><code>id</code><span>Integer</span><b>required</b><span>ID do cliente no sistema origem (chave única).</span></div>
+            <div class="param-row"><code>empresa</code><span>Integer</span><b>required</b><span>Código da empresa no Fênix ERP.</span></div>
+            <div class="param-row"><code>classe_ecom</code><span>String(15)</span><b>required</b><span>Identificação do sistema de origem.</span></div>
+            <div class="param-row"><code>uuid_pessoa</code><span>String(36)</span><em>optional</em><span>UUID do cliente no padrão RFC 4122.</span></div>
+            <div class="param-row"><code>nome</code><span>String(60)</span><b>required</b><span>Nome do cliente.</span></div>
+            <div class="param-row"><code>fantasia</code><span>String(60)</span><em>optional</em><span>Nome fantasia.</span></div>
+            <div class="param-row"><code>tipo_pessoa</code><span>String(1)</span><b>required</b><span>J — Jurídica | F — Física.</span></div>
+            <div class="param-row"><code>endereco</code><span>String(40)</span><b>required</b><span>Endereço completo com número.</span></div>
+            <div class="param-row"><code>bairro</code><span>String(30)</span><b>required</b><span>Nome do bairro.</span></div>
+            <div class="param-row"><code>cidade</code><span>String(30)</span><b>required</b><span>Nome da cidade.</span></div>
+            <div class="param-row"><code>cep</code><span>Integer</span><b>required</b><span>CEP.</span></div>
+            <div class="param-row"><code>uf</code><span>String(2)</span><b>required</b><span>Sigla do estado.</span></div>
+            <div class="param-row"><code>complemento</code><span>String(40)</span><em>optional</em><span>Complemento do endereço.</span></div>
+            <div class="param-row"><code>fone1</code><span>String(15)</span><em>optional</em><span>Telefone #1.</span></div>
+            <div class="param-row"><code>fone2</code><span>String(15)</span><em>optional</em><span>Telefone #2.</span></div>
+            <div class="param-row"><code>celular</code><span>String(15)</span><em>optional</em><span>Celular.</span></div>
+            <div class="param-row"><code>email</code><span>String(50)</span><em>optional</em><span>Endereço de e-mail.</span></div>
+            <div class="param-row"><code>cnpj_cpf</code><span>String(25)</span><b>required</b><span>CNPJ ou CPF sem máscara.</span></div>
+            <div class="param-row"><code>inscr_estad</code><span>String(15)</span><em>optional</em><span>Inscrição estadual.</span></div>
+            <div class="param-row"><code>contrib_icms</code><span>String(1)</span><em>optional</em><span>Contribuinte ICMS: S ou N.</span></div>
+            <div class="param-row"><code>imp_simples</code><span>String(1)</span><em>optional</em><span>Enquadrado no SIMPLES: S ou N.</span></div>
+            <div class="param-row"><code>mei</code><span>String(1)</span><em>optional</em><span>MEI: S ou N.</span></div>
+            <div class="param-row"><code>observ</code><span>String(255)</span><em>optional</em><span>Observação.</span></div>
+            <div class="param-row"><code>cod_vend</code><span>Integer</span><em>optional</em><span>Código do vendedor.</span></div>
+            <div class="param-row"><code>cons_final</code><span>String(1)</span><em>optional</em><span>Consumidor final: S ou N.</span></div>
+            <div class="param-row"><code>data_inclusao</code><span>Date-Time</span><em>optional</em><span>Formato yyyy-mm-dd hh:mm:ss.</span></div>
+            <div class="param-row"><code>origem_cad</code><span>String(30)</span><em>optional</em><span>Origem do cadastro. Default: api.</span></div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="example">
+          <h3>Exemplo de requisição</h3>
+          <div class="codebox"><div class="codebar"><span>JSON</span><button data-copy="rc-request">Copiar</button></div><pre id="rc-request">{
+  "data": {
+    "id": 1,
+    "empresa": 1,
+    "classe_ecom": "site",
+    "uuid_pessoa": "",
+    "nome": "XYZ Comércio de Peças Ltda",
+    "fantasia": "XYZ Peças",
+    "tipo_pessoa": "J",
+    "endereco": "Av. Júlio de Castilhos, 123",
+    "bairro": "Centro",
+    "cidade": "Caxias do Sul",
+    "cep": 95020300,
+    "uf": "RS",
+    "email": "comercial@xyzpecas.com.br",
+    "cnpj_cpf": "02103ABC000189",
+    "contrib_icms": "N",
+    "imp_simples": "S",
+    "mei": "N",
+    "cod_vend": 0,
+    "cons_final": "N",
+    "data_inclusao": "2026-09-07 10:15:33",
+    "origem_cad": "crm"
+  }
+}</pre></div>
+        </div>
+        <div class="tab-panel" data-panel="response">
+          <div class="response-head"><span class="status created">201 Created</span><span>application/json</span></div>
+          <div class="codebox"><div class="codebar"><span>Response</span><button data-copy="rc-response">Copiar</button></div><pre id="rc-response">{
+  "request_id": "MOCK-REGISTER-CUSTOMER",
+  "res_code": 201,
+  "res_message": "Cliente registrado com sucesso.",
+  "data": {
+    "numseq_rgs_pessoa": 789
+  }
+}</pre></div>
+          <div class="error-card"><span class="status conflict">409 Conflict</span><pre>{
+  "res_code": 409,
+  "res_message": "Cliente já cadastrado no Fênix ERP",
+  "data": {}
+}</pre></div>
+        </div>
+      </div>
+      <aside class="try-panel" data-mock="registercustomer">
+        <div class="try-header"><span>Try it</span><span class="mock">MOCK</span></div>
+        <p>Edite o JSON e veja uma resposta simulada.</p>
+        <div class="mock-scenario">
+          <label>Resposta simulada</label>
+          <select id="rc-scenario">
+            <option value="201">201 Created — sucesso</option>
+            <option value="400">400 Bad Request — JSON inválido</option>
+            <option value="409">409 Conflict — cliente já cadastrado</option>
+            <option value="500">500 Internal Server Error — erro interno</option>
+          </select>
+        </div>
+        <label>Request body</label>
+        <textarea id="rc-body">{
+  "data": {
+    "id": 1,
+    "empresa": 1,
+    "classe_ecom": "site",
+    "nome": "XYZ Comércio de Peças Ltda",
+    "tipo_pessoa": "J",
+    "cnpj_cpf": "02103ABC000189"
+  }
+}</textarea>
+        <button class="run" id="rc-run">Executar requisição</button>
+        <div class="mock-result"><div class="result-title"><span class="status created">201 Created</span><span>Mock response</span></div><pre id="rc-result"></pre></div>
+      </aside>
+    </section>
+
+    <!-- PEDIDOS / REGISTERORDER -->
+    <section id="registerorder" class="endpoint-section page-section">
+      <div class="endpoint-main">
+        <div class="endpoint-title"><span class="verb post big">POST</span><h2>RegisterOrder</h2></div>
+        <p class="lead">Registrar um novo pedido no banco de dados do Fênix ERP.</p>
+        <div class="url-line"><code>http://{host}/rgfenix/pedidos/registerorder</code><button data-copy-text="http://{host}/rgfenix/pedidos/registerorder">Copiar</button></div>
+
+        <div class="tabs" data-tabs="registerorder">
+          <button class="tab active" data-tab="params">Parâmetros</button>
+          <button class="tab" data-tab="example">Exemplo</button>
+          <button class="tab" data-tab="response">Resposta</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="params">
+          <h3>Body <span class="json-pill">JSON</span></h3>
+          <div class="param-table">
+            <div class="param-head"><span>Campo</span><span>Tipo</span><span>Obrigatório</span><span>Descrição</span></div>
+            <div class="param-row"><code>id</code><span>Integer</span><b>required</b><span>ID do pedido no e-commerce (chave única).</span></div>
+            <div class="param-row"><code>classe_ecom</code><span>String(15)</span><b>required</b><span>Identificação do e-commerce no Fênix ERP.</span></div>
+            <div class="param-row"><code>cod_cliente</code><span>Integer</span><b>required</b><span>Código do cliente no Fênix ERP.</span></div>
+            <div class="param-row"><code>nome_cliente</code><span>String(60)</span><b>required</b><span>Nome do cliente.</span></div>
+            <div class="param-row"><code>uuid_pessoa</code><span>String(36)</span><b>required</b><span>UUID do cliente padrão RFC 4122. Utilizado somente para novos cadastros do RGSales App.</span></div>
+            <div class="param-row"><code>dt_emis</code><span>Date</span><b>required</b><span>Data de emissão. Formato yyyy-mm-dd.</span></div>
+            <div class="param-row"><code>dt_entrega</code><span>Date</span><b>required</b><span>Data de entrega pretendida. Se não existir, informar a data de emissão.</span></div>
+            <div class="param-row"><code>tipo_ped</code><span>String(1)</span><b>required</b><span>0 Venda | 1 Consignação | 2 Teste | 3 Bonificação / Brinde | 4 Troca | 5 Comodato | 9 Orçamento.</span></div>
+            <div class="param-row"><code>forma_pgto</code><span>String(1)</span><b>required</b><span>0 Não definida | 1 Dinheiro | 2 Cheque | 3 Boleto | 4 Vale / Ticket | 5 Depósito bancário | 6 Conta corrente | 7 Pix | 9 Outro.</span></div>
+            <div class="param-row"><code>tot_bruto</code><span>Decimal(15,2)</span><b>required</b><span>Total sem descontos. Soma do campo tot_bruto dos itens.</span></div>
+            <div class="param-row"><code>perc_desc</code><span>Decimal(8,4)</span><em>optional</em><span>Percentual de desconto. Se maior que zero, vlr_desc será ignorado.</span></div>
+            <div class="param-row"><code>vlr_desc</code><span>Decimal(15,2)</span><em>optional</em><span>Valor do desconto. Considerado somente se perc_desc for zero ou não informado.</span></div>
+            <div class="param-row"><code>tot_liq</code><span>Decimal(15,2)</span><b>required</b><span>Total com descontos. Soma do campo tot_liq dos itens.</span></div>
+            <div class="param-row"><code>vlr_frete</code><span>Decimal(15,2)</span><em>optional</em><span>Valor do frete a ser adicionado ao total da Nota Fiscal.</span></div>
+            <div class="param-row"><code>observ</code><span>String(255)</span><em>optional</em><span>Observações do pedido.</span></div>
+            <div class="param-row"><code>utilizacao</code><span>String(5)</span><b>required</b><span>CONSU Consumo | IMOBI Imobilizado | INDUS Industrialização | REVEN Revenda.</span></div>
+            <div class="param-row"><code>itens</code><span>array</span><b>required</b><span>Lista de itens do pedido (mínimo 1 item).</span></div>
+            <div class="param-row nested"><code>itens[].cod_item</code><span>String(20)</span><b>required</b><span>Referência do item no ERP (chave única).</span></div>
+            <div class="param-row nested"><code>itens[].descricao</code><span>String(200)</span><b>required</b><span>Descrição ou nome do item.</span></div>
+            <div class="param-row nested"><code>itens[].qtde</code><span>Decimal(15,3)</span><b>required</b><span>Quantidade vendida.</span></div>
+            <div class="param-row nested"><code>itens[].utilizacao</code><span>String(5)</span><b>required</b><span>Utilização do item pelo cliente.</span></div>
+            <div class="param-row nested"><code>itens[].vlr_unit_atual</code><span>Decimal(15,4)</span><em>optional</em><span>Valor unitário na Lista de Preços.</span></div>
+            <div class="param-row nested"><code>itens[].tot_atual</code><span>Decimal(15,2)</span><em>optional</em><span>Valor total do item pelo preço da lista.</span></div>
+            <div class="param-row nested"><code>itens[].vlr_unit_bru</code><span>Decimal(15,4)</span><b>required</b><span>Valor unitário no pedido, sem desconto.</span></div>
+            <div class="param-row nested"><code>itens[].perc_desc1</code><span>Decimal(4,2)</span><em>optional</em><span>Percentual de desconto (0 a 90).</span></div>
+            <div class="param-row nested"><code>itens[].vlr_unit_liq</code><span>Decimal(15,4)</span><b>required</b><span>Valor unitário no pedido, com desconto.</span></div>
+            <div class="param-row nested"><code>itens[].tot_liq</code><span>Decimal(15,2)</span><b>required</b><span>Total líquido do item (qtde × vlr_unit_liq).</span></div>
+            <div class="param-row nested"><code>itens[].observ</code><span>String(255)</span><em>optional</em><span>Observações do item.</span></div>
+            <div class="param-row nested"><code>itens[].oc_cliente</code><span>String(15)</span><em>optional</em><span>Número da Ordem de Compra do cliente.</span></div>
+            <div class="param-row nested"><code>itens[].item_oc_cliente</code><span>Integer</span><em>optional</em><span>Item da Ordem de Compra do cliente.</span></div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="example">
+          <h3>Exemplo de requisição</h3>
+          <div class="codebox"><div class="codebar"><span>JSON</span><button data-copy="ro-request">Copiar</button></div><pre id="ro-request">{
+  "data": {
+    "id": 1,
+    "classe_ecom": "site",
+    "cod_cliente": 36,
+    "nome_cliente": "Cargo Center",
+    "uuid_pessoa": "",
+    "dt_emis": "2025-12-12",
+    "dt_entrega": "2025-12-12",
+    "tipo_ped": "0",
+    "forma_pgto": "3",
+    "tot_bruto": 100.00,
+    "perc_desc": 10.5,
+    "vlr_desc": 0,
+    "tot_liq": 100.00,
+    "vlr_frete": 0,
+    "observ": "Observações do pedido",
+    "utilizacao": "REVEN",
+    "itens": [
+      {
+        "cod_item": "135",
+        "descricao": "Pão de Queijo 4",
+        "qtde": 10.000,
+        "utilizacao": "REVEN",
+        "vlr_unit_atual": 15.5678,
+        "tot_atual": 155.68,
+        "vlr_unit_bru": 15.5678,
+        "perc_desc1": 0.00,
+        "vlr_unit_liq": 15.5678,
+        "tot_liq": 155.68,
+        "observ": "Observações do item 135",
+        "oc_cliente": "123",
+        "item_oc_cliente": 1
+      },
+      {
+        "cod_item": "136",
+        "descricao": "Pão de Queijo 5",
+        "qtde": 20.000,
+        "utilizacao": "REVEN",
+        "vlr_unit_atual": 16.0000,
+        "tot_atual": 320.00,
+        "vlr_unit_bru": 16.0000,
+        "perc_desc1": 0.00,
+        "vlr_unit_liq": 16.0000,
+        "tot_liq": 320.00,
+        "observ": "Observações do item 136",
+        "oc_cliente": "123",
+        "item_oc_cliente": 2
+      }
+    ]
+  }
+}</pre></div>
+        </div>
+        <div class="tab-panel" data-panel="response">
+          <div class="response-head"><span class="status ok">200 OK</span><span>application/json</span></div>
+          <div class="codebox"><div class="codebar"><span>Response</span><button data-copy="ro-response">Copiar</button></div><pre id="ro-response">{
+  "request_id": "MOCK-REGISTER-ORDER",
+  "res_code": 200,
+  "res_message": "Pedido registrado com sucesso.",
+  "data": {
+    "numseq_rgs_pedido": 847
+  }
+}</pre></div>
+          <div class="error-card"><span class="status server">500 Internal Server Error</span><pre>{
+  "res_code": 500,
+  "res_message": "Erro na inclusão do pedido no BD do ERP",
+  "data": {}
+}</pre></div>
+        </div>
+      </div>
+      <aside class="try-panel" data-mock="registerorder">
+        <div class="try-header"><span>Try it</span><span class="mock">MOCK</span></div>
+        <p>O editor simula o envio do pedido e não acessa o ERP.</p>
+        <div class="mock-scenario">
+          <label>Resposta simulada</label>
+          <select id="ro-scenario">
+            <option value="200">200 OK — sucesso</option>
+            <option value="400">400 Bad Request — parâmetros inválidos</option>
+            <option value="500">500 Internal Server Error — erro interno</option>
+          </select>
+        </div>
+        <label>Request body</label>
+        <textarea id="ro-body">{
+  "data": {
+    "id": 1,
+    "classe_ecom": "site",
+    "cod_cliente": 36,
+    "nome_cliente": "Cargo Center",
+    "dt_emis": "2025-12-12",
+    "dt_entrega": "2025-12-12",
+    "tipo_ped": "0",
+    "forma_pgto": "3",
+    "tot_bruto": 100.00,
+    "tot_liq": 100.00,
+    "utilizacao": "REVEN",
+    "itens": [
+      {
+        "cod_item": "135",
+        "descricao": "Pão de Queijo 4",
+        "qtde": 10,
+        "vlr_unit_bru": 15.5678,
+        "vlr_unit_liq": 15.5678,
+        "tot_liq": 155.68,
+        "utilizacao": "REVEN"
+      }
+    ]
+  }
+}</textarea>
+        <button class="run" id="ro-run">Executar requisição</button>
+        <div class="mock-result"><div class="result-title"><span class="status ok">200 OK</span><span>Mock response</span></div><pre id="ro-result"></pre></div>
+      </aside>
+    </section>
+
+    <!-- PEDIDOS / GETORDERSTATUS -->
+    <section id="getorderstatus" class="endpoint-section page-section">
+      <div class="endpoint-main">
+        <div class="endpoint-title"><span class="verb post big">POST</span><h2>GetOrderStatus</h2></div>
+        <p class="lead">Retornar a situação de um pedido de venda.</p>
+        <div class="url-line"><code>http://{host}/rgfenix/pedidos/getorderstatus</code><button data-copy-text="http://{host}/rgfenix/pedidos/getorderstatus">Copiar</button></div>
+
+        <div class="tabs" data-tabs="getorderstatus">
+          <button class="tab active" data-tab="params">Parâmetros</button>
+          <button class="tab" data-tab="example">Exemplo</button>
+          <button class="tab" data-tab="response">Resposta</button>
+        </div>
+
+        <div class="tab-panel active" data-panel="params">
+          <h3>Body <span class="json-pill">JSON</span></h3>
+          <div class="param-table">
+            <div class="param-head"><span>Campo</span><span>Tipo</span><span>Obrigatório</span><span>Descrição</span></div>
+            <div class="param-row"><code>classe_ecom</code><span>String(15)</span><b>required</b><span>Identificação do e-commerce no Fênix ERP.</span></div>
+            <div class="param-row"><code>order_id</code><span>Integer</span><b>required</b><span>ID do pedido no e-commerce. Exemplo: 12345.</span></div>
+          </div>
+          <h3 class="return-title">Retorno</h3>
+          <div class="param-table">
+            <div class="param-head"><span>Campo</span><span>Tipo</span><span></span><span>Descrição</span></div>
+            <div class="param-row"><code>request_id</code><span>String</span><span></span><span>ID da requisição. Utilizado para facilitar o debug.</span></div>
+            <div class="param-row"><code>res_code</code><span>Integer</span><span></span><span>Código de retorno da requisição.</span></div>
+            <div class="param-row"><code>res_message</code><span>String</span><span></span><span>Mensagem de retorno da requisição.</span></div>
+            <div class="param-row"><code>data.order_id</code><span>Integer</span><span></span><span>Número do pedido consultado.</span></div>
+            <div class="param-row"><code>data.status</code><span>String</span><span></span><span>not_found | received | registered | preparing | invoiced | canceled.</span></div>
+            <div class="param-row"><code>data.status_description</code><span>String</span><span></span><span>Descrição do status do pedido.</span></div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="example">
+          <h3>Exemplo de requisição</h3>
+          <div class="codebox"><div class="codebar"><span>JSON</span><button data-copy="os-request">Copiar</button></div><pre id="os-request">{
+  "classe_ecom": "site",
+  "order_id": 12345
+}</pre></div>
+        </div>
+        <div class="tab-panel" data-panel="response">
+          <div class="response-head"><span class="status ok">200 OK</span><span>application/json</span></div>
+          <div class="codebox"><div class="codebar"><span>Response</span><button data-copy="os-response">Copiar</button></div><pre id="os-response">{
+  "request_id": "MOCK-ORDER-STATUS",
+  "res_code": 200,
+  "res_message": "Consulta realizada com sucesso",
+  "data": {
+    "order_id": 12345,
+    "status": "registered",
+    "status_message": "Pedido registrado na carteira de pedidos"
+  }
+}</pre></div>
+        </div>
+      </div>
+      <aside class="try-panel" data-mock="getorderstatus">
+        <div class="try-header"><span>Try it</span><span class="mock">MOCK</span></div>
+        <p>Informe os dados da consulta para gerar uma resposta simulada.</p>
+        <div class="mock-scenario">
+          <label>Resposta simulada</label>
+          <select id="os-scenario">
+            <option value="200">200 OK — consulta realizada</option>
+            <option value="400">400 Bad Request — parâmetros inválidos</option>
+            <option value="401">401 Unauthorized — autenticação</option>
+            <option value="500">500 Internal Server Error — erro interno</option>
+          </select>
+        </div>
+        <label>classe_ecom</label><input id="os-class" value="site">
+        <label>order_id</label><input id="os-order" value="12345">
+        <label>status</label>
+        <select id="os-status">
+          <option>registered</option><option>received</option><option>preparing</option><option>invoiced</option><option>canceled</option><option>not_found</option>
+        </select>
+        <button class="run" id="os-run">Executar requisição</button>
+        <div class="mock-result"><div class="result-title"><span class="status ok">200 OK</span><span>Mock response</span></div><pre id="os-result"></pre></div>
+      </aside>
+    </section>
+
+    <section id="status" class="doc-section page-section">
+      <h2>HTTP Status</h2>
+      <div class="status-list">
+        <div><span class="status ok">200</span><span>Consulta ou operação concluída com sucesso.</span></div>
+        <div><span class="status created">201</span><span>Registro criado com sucesso.</span></div>
+        <div><span class="status bad">400</span><span>Problemas com conteúdo dos campos.</span></div>
+        <div><span class="status auth">401</span><span>Problemas de autenticação.</span></div>
+        <div><span class="status conflict">409</span><span>Violação de regras do Fênix ERP.</span></div>
+        <div><span class="status server">500</span><span>Erros internos.</span></div>
+      </div>
+    </section>
+
+    <footer>© RGSoft Informática Ltda, 2026 — Todos os direitos reservados.</footer>
+  </main>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>
